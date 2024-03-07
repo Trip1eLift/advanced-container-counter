@@ -1,0 +1,9 @@
+GET http://127.0.0.1:8001/health
+
+###
+
+GET http://127.0.0.1:8001/traffic
+
+###
+
+GET http://127.0.0.1:8002/traffic
