@@ -26,6 +26,5 @@ func main() {
 	})
 
 	log.Printf("Listening on %s:%s\n", ip, port)
-	container_counter_system.FirstPublish()
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", ip, port), nil))
 }

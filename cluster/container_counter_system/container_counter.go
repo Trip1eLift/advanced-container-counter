@@ -42,10 +42,14 @@ func init() {
 			}
 
 			if manager.containers.UpdateContainer(pack.Container_id) {
-				publish_enrollment()
-
 				count := manager.containers.GetLength() + 1
 				fmt.Printf("Update container count: %d\n", count)
+
+				// Delay response
+				go func() {
+					time.Sleep(2 * time.Second)
+					publish_enrollment()
+				}()
 			}
 
 			go func() {
