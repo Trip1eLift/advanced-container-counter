@@ -53,7 +53,7 @@ func init() {
 			}
 
 			go func() {
-				if manager.containers.CleanupOnExpire() {
+				if manager.containers.CleanupOnContainerExpiration(pack.Container_id) {
 					count := manager.containers.GetLength() + 1
 					fmt.Printf("Update container count: %d\n", count)
 				}
