@@ -1,8 +1,8 @@
 FROM golang:1.21-alpine3.19
 
 RUN apk add curl
-RUN apk add --update nodejs npm
-RUN npm install -g nodemon
+# RUN apk add --update nodejs npm
+# RUN npm install -g nodemon
 
 COPY ecs-container-metadata-mock-x.json /opt/ecs/metadata/cluster-x/ecs-container-metadata.json
 COPY ecs-container-metadata-mock-y.json /opt/ecs/metadata/cluster-y/ecs-container-metadata.json
