@@ -56,7 +56,7 @@ func (c *Client) IsNewContainer(container_id string) bool {
 	return !exist
 }
 
-// Return True len has changed (container_id is new)
+// Return True if len has changed (container_id is new)
 // Assume ttl is newer than head
 func (c *Client) UpdateContainer(container_id string) bool {
 	c.mu.Lock()
@@ -76,7 +76,7 @@ func (c *Client) UpdateContainer(container_id string) bool {
 	return !exist
 }
 
-// Return True len has changed
+// Return True if len has changed
 func (c *Client) RemoveExpire() bool {
 	c.mu.Lock()
 	removed := false
@@ -92,7 +92,8 @@ func (c *Client) RemoveExpire() bool {
 	return removed
 }
 
-// Return True len has changed
+// Return True if len has changed
+// Do not use this because it introduce a bug where self cannot clean up all containers when alone
 func (c *Client) CleanupOnExpire() bool {
 	c.mu.RLock()
 	node := c.tail.LHS
@@ -106,6 +107,24 @@ func (c *Client) CleanupOnExpire() bool {
 	}
 	time.Sleep(nap)
 	return c.RemoveExpire()
+}
+
+// Return True if len has changed
+func (c *Client) CleanupOnContainerExpiration(container_id string) bool {
+	c.mu.RLock()
+	node, exist := c.m[container_id]
+	if !exist {
+		c.mu.RUnlock()
+		return false
+	} else {
+		nap := time.Until(node.TTL)
+		c.mu.RUnlock()
+		if nap.Seconds() <= 0 {
+			return c.RemoveExpire()
+		}
+		time.Sleep(nap)
+		return c.RemoveExpire()
+	}
 }
 
 func (c *Client) appendLeft(node *Node) {
